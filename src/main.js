@@ -1,3 +1,5 @@
+import './style.css'
+
 (function() {
     const relList = document.createElement("link").relList;
     if (relList && relList.supports && relList.supports("modulepreload")) return;
