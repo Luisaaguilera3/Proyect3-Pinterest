@@ -83,8 +83,8 @@ function showMessage(message) {
 document.addEventListener("DOMContentLoaded", () => {
     const searchInput = document.getElementById("searchInput");
     const searchButton = document.getElementById("searchButton");
-    const resetButton = document.getElementById("resetButton");
     const imageContainer = document.getElementById("imageContainer");
+    const logo = document.getElementById("logo");
     let currentPage = 1;
     const imagesPerPage = 25;
 
@@ -98,7 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    resetButton.addEventListener("click", () => {
+    logo.addEventListener("click", () => {
         searchInput.value = "";
         currentPage = 1;
         fetchImages("", currentPage, imagesPerPage).then(images => displayImages(images, imageContainer));
