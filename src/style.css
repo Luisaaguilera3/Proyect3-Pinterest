@@ -1,6 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
 :root {
-  font-family: 'Poppins', sans-serif; 
   line-height: 1.5;
   font-weight: 400;
   color-scheme: light dark;
@@ -10,110 +10,136 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* SPACING */
+  --margin-xs: 10px;
+  --margin-s: 20px;
+  --margin-m: 30px;
+  --margin-l: 40px;
+  --margin-xl: 50px;
+  --margin-xxl: 100px;
+
+  --padding-xs: 10px;
+  --padding-s: 20px;
+  --padding-m: 30px;
+  --padding-l: 40px;
+  --padding-xl: 50px;
+  --padding-xxl: 60px;
+
+  --gap-xs: 10px;
+  --gap-s: 20px;
+  --gap-m: 30px;
+  --gap-l: 40px;
+  --gap-xl: 50px;
+  --gap-xxl: 200px;
+
+  /* COLORS */
+  --uno-color: linear-gradient(to right, #e7ceff, #2e2437);
+  --dos-color: white;
+  --tres-color: black;
+  --cuatro-color: #333;
+
 }
 
 body {
-  font-family: 'Poppins', sans-serif; 
-  margin: 0;
-  padding: 0;
-  background: linear-gradient(to right,  #e7ceff, #2e2437);
+  margin: var(--margin-xs);
+  padding: var(--padding-xs);
+  background: var(--uno-color);
   display: flex;
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
-  padding: 0 20px; 
 }
 
 header {
-  background-color: linear-gradient(to right,  #e7ceff, #2e2437); 
-  color: black;
+  background: var(--uno-color);
+  color: var(--tres-color);
   width: 100%;
-  position: relative; 
+  position: relative;
   box-sizing: border-box;
   display: flex;
   justify-content: space-between;
-  align-items: center; 
-  padding: 10px 20px; 
+  align-items: center;
+  padding: var(--padding-xs);
 }
 
 #logo {
-  width: 150px; 
-  height: auto; 
-  object-fit: contain; 
+  width: 150px;
+  height: auto;
+  object-fit: contain;
 }
 
 #searchContainer {
   display: flex;
-  gap: 10px;
-  justify-content: center; 
+  gap: var(--gap-xs);
+  justify-content: center;
 }
 
 #searchInput {
-  padding: 10px;
-  width: 250px; 
-  border: 1px solid #ddd; 
+  padding: var(--padding-xs);
+  width: 250px;
+  border: 1px solid #ddd;
   border-radius: 4px;
-  background-color: white; 
-  color: black; 
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+  background: var(--dos-color);
+  color: var(--tres-color);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 #searchButton {
-  padding: 10px 20px;
-  background-color: black; 
-  color: white;
+  padding: var(--padding-xs) var(--padding-s);
+  background: var(--tres-color);
+  color: var(--dos-color);
   border: 1px solid #000;
   border-radius: 4px;
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 #searchButton:hover {
-  background-color: #333;
+  background: var(--cuatro-color);
 }
 
 #imageContainer {
-  column-count: 4; 
-  column-gap: 15px; 
-  padding: 20px;
+  column-count: 4;
+  column-gap: 15px;
+  padding: var(--padding-s);
   width: 100%;
   max-width: 1200px;
 }
 
 #imageContainer a {
   display: block;
-  margin-bottom: 15px; 
+  margin-bottom: 15px;
   border-radius: 8px;
   overflow: hidden;
   transition: transform 0.3s, box-shadow 0.3s;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 #imageContainer a:hover {
   transform: scale(1.05);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); 
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
 
 #imageContainer img {
   display: block;
   width: 100%;
-  height: auto; 
-  object-fit: cover; 
+  height: auto;
+  object-fit: cover;
 }
-
 
 @media (max-width: 866px) {
   #logo {
-    width: 120px; 
-    margin-left: 20px; 
+    width: 120px;
+    margin-left: 20px;
   }
 
   #searchContainer {
-    margin: 10px 0; 
+    margin: var(--padding-xs) 0;
   }
 
   #searchInput {
-    width: 220px; 
+    width: 220px;
   }
 
   #searchButton {
@@ -127,23 +153,22 @@ header {
   }
 }
 
-
 @media (max-width: 760px) {
   body {
-    padding: 0 10px; 
+    padding: var(--padding-xs) var(--padding-m);
   }
 
   #logo {
-    width: 120px; 
-    margin-left: 20px; 
+    width: 120px;
+    margin-left: 20px;
   }
 
   #searchContainer {
-    margin: 20px auto; 
+    margin: var(--margin-s) auto;
   }
 
   #searchInput {
-    width: 220px; 
+    width: 220px;
   }
 
   #searchButton {
@@ -155,28 +180,18 @@ header {
     column-count: 2;
     column-gap: 10px;
   }
-
-  #imageContainer img {
-    width: 100%;
-    object-fit: cover;
-  }
 }
 
-
 @media (max-width: 560px) {
-  body {
-    padding: 0 10px; 
-  }
-
   #logo {
-    display: none; 
+    display: none;
   }
 
   #searchContainer {
-    flex-direction: column; 
+    flex-direction: column;
     gap: 5px;
-    width: 100%; 
-    margin: 30px 0 10px 0; 
+    width: 100%;
+    margin: 30px 0 10px;
   }
 
   #searchInput {
@@ -185,17 +200,12 @@ header {
   }
 
   #searchButton {
-    width: 80%; 
+    width: 80%;
     padding: 8px 16px;
   }
 
   #imageContainer {
-    column-count: 1; 
+    column-count: 1;
     column-gap: 5px;
-  }
-
-  #imageContainer img {
-    width: 100%;
-    object-fit: cover;
   }
 }
