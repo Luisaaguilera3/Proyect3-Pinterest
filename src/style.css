@@ -52,7 +52,6 @@ body {
 }
 
 header {
-  background: var(--uno-color);
   color: var(--tres-color);
   width: 100%;
   position: relative;
