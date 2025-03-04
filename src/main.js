@@ -3,10 +3,11 @@ import './style.css';
 async function fetchImages(query, page, count) {
     const clientId = "hQs2C-CL3bhXvVcqH0GYXOAqreh-siflkv3_12d5ZrU";
     try {
-        const url = query 
-            ? `https://api.unsplash.com/search/photos?query=${query}&per_page=${count}&page=${page}&client_id=${clientId}` 
+        const url = query
+            ? `https://api.unsplash.com/search/photos?query=${query}&per_page=${count}&page=${page}&client_id=${clientId}`
             : `https://api.unsplash.com/photos?per_page=${count}&page=${page}&client_id=${clientId}`;
         
+        console.log(`Fetching images: ${url}`); 
         const response = await fetch(url);
         if (!response.ok) throw new Error("Error fetching images");
         
@@ -23,7 +24,7 @@ function displayImages(images, container) {
         showMessage("No images found. Try another search.");
         return;
     }
-
+    
     images.forEach(image => {
         const link = document.createElement("a");
         link.href = image.links.html;
@@ -54,12 +55,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchButton = document.getElementById("searchButton");
     const imageContainer = document.getElementById("imageContainer");
     const logo = document.getElementById("logo");
+    const sentinel = document.getElementById("sentinel"); 
     let currentPage = 1;
     const imagesPerPage = 25;
     let isFetching = false;
-
+    
     function loadImages(query = "", reset = false) {
-        if (isFetching) return;
+        if (isFetching) return; 
         isFetching = true;
         
         if (reset) {
@@ -72,12 +74,12 @@ document.addEventListener("DOMContentLoaded", () => {
             isFetching = false;
         });
     }
-
-    loadImages();
+    
+    loadImages(); 
 
     searchButton.addEventListener("click", () => {
         const query = searchInput.value.trim();
-        if (query) loadImages(query, true);
+        if (query.length > 2) loadImages(query, true); 
     });
 
     logo.addEventListener("click", () => {
@@ -85,14 +87,13 @@ document.addEventListener("DOMContentLoaded", () => {
         loadImages("", true);
     });
 
-    let debounceTimer;
-    window.addEventListener("scroll", () => {
-        clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(() => {
-            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
-                currentPage++;
-                loadImages(searchInput.value.trim());
-            }
-        }, 300);
-    });
+    
+    const observer = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting && !isFetching) {
+            currentPage++;
+            loadImages(searchInput.value.trim());
+        }
+    }, { rootMargin: "100px" });
+
+    observer.observe(sentinel); 
 });
