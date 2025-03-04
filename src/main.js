@@ -1,38 +1,15 @@
-import './style.css'
-
-(function() {
-    const relList = document.createElement("link").relList;
-    if (relList && relList.supports && relList.supports("modulepreload")) return;
-    for (const link of document.querySelectorAll('link[rel="modulepreload"]')) handlePreload(link);
-    new MutationObserver(mutations => {
-        for (const mutation of mutations)
-            if (mutation.type === "childList")
-                for (const node of mutation.addedNodes)
-                    if (node.tagName === "LINK" && node.rel === "modulepreload") handlePreload(node);
-    }).observe(document, { childList: true, subtree: true });
-
-    function getFetchOptions(element) {
-        const options = {};
-        if (element.integrity) options.integrity = element.integrity;
-        if (element.referrerPolicy) options.referrerPolicy = element.referrerPolicy;
-        options.credentials = element.crossOrigin === "use-credentials" ? "include" : 
-                              element.crossOrigin === "anonymous" ? "omit" : "same-origin";
-        return options;
-    }
-
-    function handlePreload(linkElement) {
-        if (linkElement.preloadHandled) return;
-        linkElement.preloadHandled = true;
-        fetch(linkElement.href, getFetchOptions(linkElement));
-    }
-})();
+import './style.css';
 
 async function fetchImages(query, page, count) {
     const clientId = "hQs2C-CL3bhXvVcqH0GYXOAqreh-siflkv3_12d5ZrU";
     try {
-        const url = query ? `https://api.unsplash.com/search/photos?query=${query}&per_page=${count}&page=${page}&client_id=${clientId}` 
-                          : `https://api.unsplash.com/photos/random?count=${count}&client_id=${clientId}`;
+        const url = query 
+            ? `https://api.unsplash.com/search/photos?query=${query}&per_page=${count}&page=${page}&client_id=${clientId}` 
+            : `https://api.unsplash.com/photos?per_page=${count}&page=${page}&client_id=${clientId}`;
+        
         const response = await fetch(url);
+        if (!response.ok) throw new Error("Error fetching images");
+        
         const data = await response.json();
         return query ? data.results : data;
     } catch (error) {
@@ -42,19 +19,20 @@ async function fetchImages(query, page, count) {
 }
 
 function displayImages(images, container) {
-    container.innerHTML = "";
     if (images.length === 0) {
-        showMessage("No images found. Showing alternative images.");
-        fetchImages("cats", 1, 10).then(alternativeImages => displayImages(alternativeImages, container));
+        showMessage("No images found. Try another search.");
         return;
     }
+
     images.forEach(image => {
         const link = document.createElement("a");
         link.href = image.links.html;
         link.target = "_blank";
+
         const img = document.createElement("img");
         img.src = image.urls.regular;
         img.alt = image.alt_description || "Image";
+
         link.appendChild(img);
         container.appendChild(link);
     });
@@ -65,15 +43,6 @@ function showMessage(message) {
     if (!messageBox) {
         messageBox = document.createElement("div");
         messageBox.id = "messageBox";
-        messageBox.style.position = "fixed";
-        messageBox.style.top = "10px";
-        messageBox.style.left = "50%";
-        messageBox.style.transform = "translateX(-50%)";
-        messageBox.style.background = "#f8d7da";
-        messageBox.style.color = "#721c24";
-        messageBox.style.padding = "10px";
-        messageBox.style.borderRadius = "5px";
-        messageBox.style.boxShadow = "0px 0px 10px rgba(0,0,0,0.1)";
         document.body.appendChild(messageBox);
     }
     messageBox.textContent = message;
@@ -87,28 +56,43 @@ document.addEventListener("DOMContentLoaded", () => {
     const logo = document.getElementById("logo");
     let currentPage = 1;
     const imagesPerPage = 25;
+    let isFetching = false;
 
-    fetchImages("", currentPage, imagesPerPage).then(images => displayImages(images, imageContainer));
+    function loadImages(query = "", reset = false) {
+        if (isFetching) return;
+        isFetching = true;
+        
+        if (reset) {
+            imageContainer.innerHTML = "";
+            currentPage = 1;
+        }
+        
+        fetchImages(query, currentPage, imagesPerPage).then(images => {
+            displayImages(images, imageContainer);
+            isFetching = false;
+        });
+    }
+
+    loadImages();
 
     searchButton.addEventListener("click", () => {
         const query = searchInput.value.trim();
-        if (query) {
-            currentPage = 1;
-            fetchImages(query, currentPage, imagesPerPage).then(images => displayImages(images, imageContainer));
-        }
+        if (query) loadImages(query, true);
     });
 
     logo.addEventListener("click", () => {
         searchInput.value = "";
-        currentPage = 1;
-        fetchImages("", currentPage, imagesPerPage).then(images => displayImages(images, imageContainer));
+        loadImages("", true);
     });
 
+    let debounceTimer;
     window.addEventListener("scroll", () => {
-        if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-            const query = searchInput.value.trim();
-            currentPage++;
-            fetchImages(query, currentPage, imagesPerPage).then(images => displayImages(images, imageContainer));
-        }
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+                currentPage++;
+                loadImages(searchInput.value.trim());
+            }
+        }, 300);
     });
 });
