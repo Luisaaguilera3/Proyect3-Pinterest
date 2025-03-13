@@ -68,8 +68,13 @@ document.addEventListener("DOMContentLoaded", () => {
             imageContainer.innerHTML = "";
             currentPage = 1;
         }
-        
+
         fetchImages(query, currentPage, imagesPerPage).then(images => {
+            if (images.length === 0) {
+                showMessage("No images found. Try another search.");
+                isFetching = false;
+                return;
+            }
             displayImages(images, imageContainer);
             isFetching = false;
         });
@@ -79,7 +84,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     searchButton.addEventListener("click", () => {
         const query = searchInput.value.trim();
-        if (query.length > 2) loadImages(query, true); 
+        if (query.length < 3) {
+            showMessage("Please enter at least 3 characters.");
+            return;
+        }
+        loadImages(query, true); 
     });
 
     logo.addEventListener("click", () => {
@@ -87,9 +96,9 @@ document.addEventListener("DOMContentLoaded", () => {
         loadImages("", true);
     });
 
-    
+
     const observer = new IntersectionObserver(entries => {
-        if (entries[0].isIntersecting && !isFetching) {
+        if (entries[0].isIntersecting && !isFetching) { 
             currentPage++;
             loadImages(searchInput.value.trim());
         }
